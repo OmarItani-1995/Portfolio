@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af25bcb12da5516428bf494661a53b43, type: 3}
+  m_Name: 3. Load From Template Exampleasset
+  m_EditorClassIdentifier: 
+  Data: '{"Duration":2,"Curve":{"Keys":[{"Time":0,"Value":0,"InTangent":0,"OutTangent":0,"InWeight":0,"OutWeight":0,"WeightedMode":0},{"Time":1,"Value":1,"InTangent":0,"OutTangent":0,"InWeight":0,"OutWeight":0,"WeightedMode":0}]},"Workers":{"Workers":[{"Type":"MWorker_MoveToPosition","Destination":[0,0,10],"Space":1},{"Type":"MWorker_ScaleTo","EndScale":[2,2,2]}]},"Chain":{"Chains":[{"Duration":2,"Curve":{"Keys":[{"Time":0,"Value":0,"InTangent":0,"OutTangent":0,"InWeight":0,"OutWeight":0,"WeightedMode":0},{"Time":1,"Value":1,"InTangent":0,"OutTangent":0,"InWeight":0,"OutWeight":0,"WeightedMode":0}]},"Workers":{"Workers":[{"Type":"MWorker_MoveToPosition","Destination":[0,0,0],"Space":1},{"Type":"MWorker_ScaleTo","EndScale":[1,1,1]}]},"Chain":{"Chains":[]}}]}}'
