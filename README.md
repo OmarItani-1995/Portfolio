@@ -87,13 +87,15 @@ Content:
 6. Msg System
    A messaging system using Generics for easy message Listen/Queue.
    You subscribe to msgs by calling Msg.Listen with the type of message as a generic argument, and the Action of that msg: 
-   Msg.Listen<Msg_TestMessage>((msg) => Debug.Log(msg.GetType().Name)); // will debug Msg_TestMessage
+
+         Msg.Listen<Msg_TestMessage>((msg) => Debug.Log(msg.GetType().Name)); // will debug Msg_TestMessage
 
    You also Queue msgs by calling Msg.Queue with a message instance as an argument:
-   Msg.Queue(new Msg_TestMessage()
-   {
-     Data = "Test Data"
-   }); // Should Print Test Data
+
+         Msg.Queue(new Msg_TestMessage()
+         {
+           Data = "Test Data"
+         }); // Should Print Test Data
 
    A message can have more than One subscriber, it only needs to be a child of Message class.
    Few More Updates coming soon: Initialization callback for singletons, debugging message containers, permenant listeners queue.
