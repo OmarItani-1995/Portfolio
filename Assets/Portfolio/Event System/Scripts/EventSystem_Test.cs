@@ -10,7 +10,7 @@ public class EventSystem_Test : MonoBehaviour
     }
 }
 
-public class TestEvent
+public class TestEvent : Event
 {
     public string Name { get; set; }
 }
@@ -23,11 +23,10 @@ public class TestEventListener_First : Event_Listener<TestEvent>
     }
 }
 
-public class TestEventListener_Second : Event_Listener<TestEvent>
+public class TestEventListener_Second : Event_Listener<TestEvent>, IDisabledListener
 {
     public override void OnEvent(TestEvent ev)
     {
         Debug.Log($"Second Event Listener: {ev.Name}");
     }
 }
-

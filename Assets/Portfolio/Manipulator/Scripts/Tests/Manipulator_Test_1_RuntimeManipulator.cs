@@ -8,7 +8,7 @@ public class Manipulator_Test_1_RuntimeManipulator : MonoBehaviour
     public void Run()
     {
         TestingTransform
-            .Manipulate(2, manipulator =>
+            .Manipulate(duration: 2, manipulator =>
             {
                 manipulator
                     .Add<MWorker_MoveToPosition>(worker =>

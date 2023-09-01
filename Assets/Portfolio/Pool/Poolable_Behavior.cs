@@ -29,7 +29,10 @@ public class Poolable_Behavior<T> : MonoBehaviour where T : MonoBehaviour
         if (pool == null) pool = new List<T>();
         if (pool.Count > 0)
         {
-            return pool.GetLastAndRemove();
+            var prefab = pool.GetLastAndRemove();
+            prefab.gameObject.SetActive(true);
+            prefab.transform.SetParent(parent);
+            return prefab;
         }
         else
         {
@@ -44,10 +47,23 @@ public class Poolable_Behavior<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
+    public static void FillPool(int count, Transform parent = null)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Get(parent);
+        }
+        for (int i = 0; i < count; i++)
+        {
+            Return(active.GetLastAndRemove());
+        }
+    }
+
     public static void Return(T obj)
     {
         active.Remove(obj);
         pool.Add(obj);
+        obj.gameObject.SetActive(false);
     }
 
     public static void Reset()

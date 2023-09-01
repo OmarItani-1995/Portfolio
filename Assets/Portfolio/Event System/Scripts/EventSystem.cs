@@ -8,42 +8,54 @@ using UnityEngine;
 public class EventSystem : MonoBehaviour
 {
     private static EventSystem _instance = null;
-
-    private static EventSystem Instance
+    void Awake()
     {
-        get
+        if (_instance == null)
         {
-            if (_instance == null)
-            {
-                _instance = new GameObject("EventSystem").AddComponent<EventSystem>();
-                _instance.Initialize();
-            }
-            return _instance;
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+            Initialize();
+        }
+        else
+        {
+            Destroy(this.gameObject);
         }
     }
 
-    private Dictionary<System.Type, List<Type>> _events = new Dictionary<System.Type, List<Type>>();
+    private Dictionary<System.Type, List<Event_Listener>> listeners = new();
 
     public void Initialize()
     {
-        var eventListeners = Assembly
-                                .GetExecutingAssembly()
-                                .GetTypes()
-                                .Where(t => !t.IsAbstract && (typeof(Event_Listener<>).IsAssignableFrom(t) || GetInheritanceChain(t).Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(Event_Listener<>))));
-
+        IEnumerable<Type> eventListeners = GetListenerTypes();
         foreach (var listener in eventListeners)
         {
+            if (listener.GetInterface(nameof(IDisabledListener)) != null) continue;
             var eventType = listener.BaseType.GetGenericArguments()[0];
-            Debug.Log(eventType);
-            if (!_events.ContainsKey(eventType))
+            if (!listeners.ContainsKey(eventType))
             {
-                _events.Add(eventType, new List<Type>());
+                listeners.Add(eventType, new List<Event_Listener>());
             }
-            _events[eventType].Add(listener);
+            listeners[eventType].
+                Add((Event_Listener)Activator.CreateInstance(listener));
         }
     }
 
-    public static Type[] GetInheritanceChain(Type type)
+    private static IEnumerable<Type> GetListenerTypes()
+    {
+        return Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .Where(
+                    t => !t.IsAbstract
+                    && (typeof(Event_Listener<>).IsAssignableFrom(t)
+                    || GetInheritanceChain(t)
+                        .Any(
+                            x =>
+                                x.IsGenericType
+                                && x.GetGenericTypeDefinition() == typeof(Event_Listener<>))));
+    }
+
+    public static List<Type> GetInheritanceChain(Type type)
     {
         var inheritanceChain = new List<Type>();
 
@@ -54,23 +66,41 @@ public class EventSystem : MonoBehaviour
             current = current.BaseType;
         }
 
-        return inheritanceChain.ToArray();
+        return inheritanceChain;
     }
 
-    public static void FireEvent<T>(T ev)
+    public static void FireEvent<T>(T ev) where T : Event
     {
         var type = typeof(T);
-        if (!Instance._events.ContainsKey(type))
+        if (!_instance.listeners.ContainsKey(type))
         {
             Debug.Log($"No listeners for event {type}");
             return;
         }
 
-        Instance._events[type].Select(x => Activator.CreateInstance(x) as Event_Listener<T>).ToList().ForEach(x => x.OnEvent(ev));
+        var listeners = _instance.listeners[type];
+        foreach (var listener in listeners)
+        {
+            (listener as Event_Listener<T>).OnEvent(ev);
+        }
     }
 }
+public class Event
+{
 
-public abstract class Event_Listener<T>
+}
+
+public class Event_Listener
+{
+
+}
+
+public abstract class Event_Listener<T> : Event_Listener where T : Event
 {
     public abstract void OnEvent(T ev);
+}
+
+public interface IDisabledListener
+{
+
 }
